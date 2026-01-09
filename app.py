@@ -42,6 +42,11 @@ links_input = st.text_area(
 
 st.subheader("2. Configurações")
 output_filename = st.text_input("Nome do Arquivo Final:", value="documento_unificado.pdf", key="filename_input")
+# Sanitize filename to prevent path errors
+output_filename = os.path.basename(output_filename)
+# Sanitize filename to prevent path errors
+output_filename = os.path.basename(output_filename) 
+
 if not output_filename.endswith('.pdf'):
     output_filename += ".pdf"
     
@@ -97,19 +102,21 @@ if st.button("Unificar Arquivos", type="primary", use_container_width=True):
             if failed_files:
                 status.update(label=f"❌ Problemas encontrados em {len(failed_files)} arquivo(s).", state="error")
                 
-                st.error("⚠️ **Atenção: Não foi possível baixar todos os arquivos.**")
-                
-                st.markdown("Confira a lista de erros abaixo:")
-                
-                for fail in failed_files:
-                    with st.expander(f"❌ Arquivo {fail['index']} (Clique para detalhes)"):
-                        st.markdown(f"**Link:** `{fail['link']}`")
-                        st.divider()
-                        st.info(f"**Diagnóstico:** {fail['msg']}")
-                        st.caption("Dica: Verifique se o link está público ('Qualquer pessoa') e se o arquivo existe.")
-                
-                st.warning("🛑 **A unificação foi cancelada.** Corrija os links acima e tente novamente.")
-                st.stop()
+        # Error reporting block updated to be OUTSIDE the `st.status` context to avoid nested expander errors
+        if failed_files:
+            st.error("⚠️ **Atenção: Não foi possível baixar todos os arquivos.**")
+            
+            st.markdown("Confira a lista de erros abaixo:")
+            
+            for fail in failed_files:
+                with st.expander(f"❌ Arquivo {fail['index']} (Clique para detalhes)"):
+                    st.markdown(f"**Link:** `{fail['link']}`")
+                    st.divider()
+                    st.info(f"**Diagnóstico:** {fail['msg']}")
+                    st.caption("Dica: Verifique se o link está público ('Qualquer pessoa') e se o arquivo existe.")
+            
+            st.warning("🛑 **A unificação foi cancelada.** Corrija os links acima e tente novamente.")
+            st.stop()
 
             if not downloaded_files:
                 status.update(label="Nenhum arquivo válido encontrado.", state="error")
