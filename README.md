@@ -1,3 +1,15 @@
+---
+title: PDF Merge By G Drive Links
+emoji: 📄
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+sdk_version: 1.41.1
+app_file: app.py
+pinned: false
+license: mit
+---
+
 # Unificador de PDFs (Google Drive)
 
 App simples para unificar PDFs via links públicos do Google Drive.
